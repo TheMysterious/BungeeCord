@@ -6,6 +6,7 @@ import com.google.common.collect.Multimap;
 import com.google.common.eventbus.Subscribe;
 import java.io.File;
 import java.io.InputStream;
+import java.lang.Class;
 import java.lang.reflect.Method;
 import java.net.URL;
 import java.net.URLClassLoader;
@@ -195,7 +196,25 @@ public class PluginManager
     {
         return plugins.get( name );
     }
-
+    
+    /**
+     * Returns a loaded plugin identified by the specified Class.
+     *
+     * @param pluginClass of the plugin to retrieve
+     * @return the retrieved plugin or null if not loaded
+     */
+    public <T extends Plugin> T getPlugin(Class<? extends T> pluginClass)
+    {
+        for (Plugin plugin : getPlugins())
+        {
+            if (pluginClass.isInstance(plugin))
+            {
+                return pluginClass.cast(plugin);
+            }
+        }
+        return null;
+    }
+    
     public void loadPlugins()
     {
         Map<PluginDescription, Boolean> pluginStatuses = new HashMap<>();
